@@ -1,0 +1,33 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "ubuntu/trusty64"
+
+  config.vm.hostname = "jb-psqldb-04-skeleton"
+  config.vm.network "private_network", ip: "192.168.100.104"
+
+  config.vm.synced_folder "../lib", "/shared"
+
+  config.vm.provision "shell", :inline => <<-SHELL
+    apt-get -y upgrade
+    apt-get -y install postgresql-9.3
+
+    cp /shared/ssh-vagrant/* ~vagrant/.ssh/
+    chmod 600 ~vagrant/.ssh/*
+    chown vagrant ~vagrant/.ssh/*
+
+    cp /shared/ssh-root/* ~root/.ssh/
+    chmod 600 ~root/.ssh/*
+    chown root ~root/.ssh/*
+
+    echo "host all all 0.0.0.0/0 md5" >> /etc/postgresql/9.3/main/pg_hba.conf
+    sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" /etc/postgresql/9.3/main/postgresql.conf
+    sudo service postgresql restart
+
+    echo "alter user postgres with password 'postgres'" | sudo -u postgres psql
+    echo "create user testdb with password 'testdb'; create database testdb owner testdb" | sudo -u postgres psql
+    bunzip2 --stdout /shared/db/testdb/testdb.schema-latest.dmp.bz2 | sudo -u postgres pg_restore --clean --create --dbname=postgres
+    bunzip2 --stdout /shared/db/testdb/testdb.seed-latest.dmp.bz2 | sudo -u postgres pg_restore --dbname=testdb
+  SHELL
+end

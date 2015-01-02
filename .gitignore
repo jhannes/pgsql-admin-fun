@@ -1,0 +1,5 @@
+.vagrant
+*.dmp.bz2
+*.dmp
+id_rsa
+id_rsa.pub
