@@ -5,7 +5,7 @@ die () {
 }
 
 DATABASE=$1
-TARGET_DIR=/shared/db/$DATABASE
+TARGET_DIR=/backup/db/$DATABASE
 TARGET_USER=$USER
 
 [ "$#" -eq 1 ] || die "1 argument required, $# provided"

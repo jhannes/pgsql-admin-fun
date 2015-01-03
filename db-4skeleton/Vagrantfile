@@ -8,6 +8,7 @@ Vagrant.configure(2) do |config|
   config.vm.network "private_network", ip: "192.168.100.104"
 
   config.vm.synced_folder "../lib", "/shared"
+  config.vm.synced_folder "../backup", "/backup"
 
   config.vm.provision "shell", :inline => <<-SHELL
     apt-get -y upgrade
@@ -27,7 +28,7 @@ Vagrant.configure(2) do |config|
 
     echo "alter user postgres with password 'postgres'" | sudo -u postgres psql
     echo "create user testdb with password 'testdb'; create database testdb owner testdb" | sudo -u postgres psql
-    bunzip2 --stdout /shared/db/testdb/testdb.schema-latest.dmp.bz2 | sudo -u postgres pg_restore --clean --create --dbname=postgres
-    bunzip2 --stdout /shared/db/testdb/testdb.seed-latest.dmp.bz2 | sudo -u postgres pg_restore --dbname=testdb
+    bunzip2 --stdout /backup/db/testdb/testdb.schema-latest.dmp.bz2 | sudo -u postgres pg_restore --clean --create --dbname=postgres
+    bunzip2 --stdout /backup/db/testdb/testdb.seed-latest.dmp.bz2 | sudo -u postgres pg_restore --dbname=testdb
   SHELL
 end
