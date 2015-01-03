@@ -22,14 +22,14 @@ Vagrant.configure(2) do |config|
     chmod 600 ~root/.ssh/*
     chown root ~root/.ssh/*
 
+    echo "alter user postgres with password 'postgres'" | sudo -u postgres psql
     echo "host all all 0.0.0.0/0 md5" >> /etc/postgresql/9.3/main/pg_hba.conf
     sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" /etc/postgresql/9.3/main/postgresql.conf
+
     sed -i "s/^#hot_standby = off/hot_standby = on/" /etc/postgresql/9.3/main/postgresql.conf
     sudo -u postgres echo -e "standby_mode = 'on'\nprimary_conninfo = 'host=192.168.100.101'" > /var/lib/postgresql/9.3/main/recovery.conf
-    echo "alter user postgres with password 'postgres'" | sudo -u postgres psql
+
     crontab /shared/bin/standby.crontab
   SHELL
-
- # sudo rsync -av --exclude pg_xlog --exclude postgresql.conf /var/lib/postgresql/9.3/main/ 192.168.100.101:/var/lib/postgresql/9.3/main/
 
 end
