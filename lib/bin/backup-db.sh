@@ -13,8 +13,8 @@ TARGET_USER=$USER
 sudo rm /tmp/$DATABASE.*
 
 sudo -u postgres pg_dump --format=c --file=/tmp/$DATABASE.dmp $DATABASE
-sudo -u postgres pg_dump --format=c --schema-only --file=/tmp/$DATABASE.schema.dmp $DATABASE
-sudo -u postgres pg_dump --format=c --data-only --table=status_codes --table=countries --file=/tmp/$DATABASE.seed.dmp $DATABASE
+sudo -u postgres pg_dump --format=plain --schema-only --file=/tmp/$DATABASE.schema.dmp $DATABASE
+sudo -u postgres pg_dump --format=plain --data-only --inserts --table=status_codes --table=countries --file=/tmp/$DATABASE.seed.dmp $DATABASE
 sudo chown $TARGET_USER /tmp/$DATABASE.*
 bzip2 /tmp/$DATABASE.*dmp
 

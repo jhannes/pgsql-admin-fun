@@ -46,5 +46,13 @@ Flyway:
 -------
 
 1. test server db-5development
-2. Initalized from pg_dump --format=plain
-
+2. Initalized from pg_dump --format=plain > V00_1__baseline-schema.sql and V00_2__baseline-seed-data.sql
+3. vagrant:
+   apt-get java
+   wget http://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/3.1/flyway-commandline-3.1.zip
+4. Alternative 1:
+   start with db-4skeleton
+   flyway baseline.version=0.2 baseline
+   flyway migrate
+5. alternative 2:
+   flyway migrate
